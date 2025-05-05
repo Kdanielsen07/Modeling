@@ -11,11 +11,17 @@ if uploaded_file and api_key:
     if st.button("✨ Generate 3D Model"):
         with st.spinner("Sending to Meshy..."):
             try:
-                response = requests.post(
-                    "https://api.meshy.ai/v1/image-to-3d",
-                    headers={"Authorization": f"Bearer {api_key}"},
-                    files={"image": uploaded_file}
-                )
+                import io
+
+file_bytes = uploaded_file.read()
+file_tuple = (uploaded_file.name, io.BytesIO(file_bytes), uploaded_file.type)
+
+response = requests.post(
+    "https://api.meshy.ai/v1/image-to-3d",
+    headers={"Authorization": f"Bearer {api_key}"},
+    files={"image": file_tuple}
+)
+
 
                 if response.status_code == 200:
                     result = response.json()
